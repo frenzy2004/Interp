@@ -1,0 +1,104 @@
+.interpreter-alert {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: alertFadeIn 0.3s ease;
+}
+
+@keyframes alertFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.interpreter-alert__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px;
+  border-radius: 20px;
+  background: #1a0a0a;
+  border: 2px solid #ef4444;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 60px rgba(239, 68, 68, 0.3);
+  animation: alertPulse 2s ease-in-out infinite;
+}
+
+@keyframes alertPulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.2); }
+  50% { box-shadow: 0 0 80px rgba(239, 68, 68, 0.4); }
+}
+
+.interpreter-alert__icon {
+  color: #ef4444;
+  animation: iconBounce 1s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.interpreter-alert__title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fca5a5;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.interpreter-alert__reason {
+  font-size: 14px;
+  color: #a0a0a0;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.interpreter-alert__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ef4444;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.interpreter-alert__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: statusBlink 1s ease-in-out infinite;
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.interpreter-alert__dismiss {
+  margin-top: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.interpreter-alert__dismiss:hover {
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.2);
+}

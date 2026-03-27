@@ -1,0 +1,282 @@
+/* ─── Interpreter Dashboard ─────────────────────────────────────────────── */
+
+.interp-dash__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.interp-dash__panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  background: #0f172a;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  animation: interpDashSlideIn 0.25s ease-out;
+  z-index: 101;
+}
+
+@keyframes interpDashSlideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.interp-dash__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.interp-dash__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: 0.01em;
+}
+
+.interp-dash__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.6);
+  animation: interpDashBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes interpDashBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.interp-dash__close {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.interp-dash__close:hover { color: #f1f5f9; }
+
+/* ─── Meta ───────────────────────────────────────────────────────────────── */
+
+.interp-dash__meta {
+  padding: 10px 24px;
+  font-size: 12px;
+  color: #64748b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ─── Transcript ─────────────────────────────────────────────────────────── */
+
+.interp-dash__transcript {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.interp-dash__transcript::-webkit-scrollbar { width: 4px; }
+.interp-dash__transcript::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.interp-dash__empty {
+  color: #475569;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 40px;
+  font-style: italic;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────────────────── */
+
+.interp-dash__card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.interp-dash__card--physician { border-left: 3px solid #3b82f6; }
+.interp-dash__card--patient   { border-left: 3px solid #f97316; }
+
+.interp-dash__card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.interp-dash__role {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.interp-dash__time {
+  color: #475569;
+  margin-left: auto;
+}
+
+.interp-dash__corrected-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Fields ─────────────────────────────────────────────────────────────── */
+
+.interp-dash__field { display: flex; flex-direction: column; gap: 4px; }
+
+.interp-dash__field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.interp-dash__field-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
+}
+
+.interp-dash__field-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.interp-dash__field-text--translation { color: #a5b4fc; }
+
+.interp-dash__pending { color: #475569; font-style: italic; }
+
+.interp-dash__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.interp-dash__edit-btn:hover { color: #a5b4fc; border-color: rgba(165, 180, 252, 0.3); }
+
+/* ─── Edit Area ──────────────────────────────────────────────────────────── */
+
+.interp-dash__edit-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.interp-dash__textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(165, 180, 252, 0.3);
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.55;
+  padding: 8px 12px;
+  resize: vertical;
+  font-family: inherit;
+  outline: none;
+}
+.interp-dash__textarea:focus { border-color: rgba(165, 180, 252, 0.6); }
+
+.interp-dash__edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.interp-dash__save-btn,
+.interp-dash__cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+.interp-dash__save-btn   { background: #4f46e5; color: #fff; }
+.interp-dash__cancel-btn { background: rgba(255,255,255,0.07); color: #94a3b8; }
+.interp-dash__save-btn:hover,
+.interp-dash__cancel-btn:hover { opacity: 0.85; }
+
+/* ─── Tags ───────────────────────────────────────────────────────────────── */
+
+.interp-dash__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ─── Comprehension Check Badge ──────────────────────────────────────────── */
+
+.interp-dash__check-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.interp-dash__check-badge--pass    { background: rgba(74,222,128,0.12); color: #4ade80; }
+.interp-dash__check-badge--fail    { background: rgba(248,113,113,0.12); color: #f87171; }
+.interp-dash__check-badge--pending { background: rgba(251,191,36,0.12);  color: #fbbf24; }
+.interp-dash__check-badge--skipped { background: rgba(100,116,139,0.12); color: #94a3b8; }
+
+.interp-dash__check-q {
+  font-weight: 400;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .interp-dash__panel { width: 100%; }
+}

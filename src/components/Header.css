@@ -1,0 +1,99 @@
+.interp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  flex-shrink: 0;
+}
+
+.interp-header__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.interp-header__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.interp-header__logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #3b82f6, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.interp-header__tagline {
+  font-size: 12px;
+  color: var(--text-tertiary, #64748b);
+  letter-spacing: 0.02em;
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .interp-header__tagline { display: inline; }
+}
+
+.interp-header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.interp-header__btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.interp-header__btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary, #f1f5f9);
+}
+
+.interp-header__btn--danger {
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.interp-header__btn--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.interp-header__btn--primary {
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.interp-header__btn--primary:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.interp-header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #94a3b8);
+}

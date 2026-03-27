@@ -1,0 +1,177 @@
+/* ─── Interp — Main Layout ────────────────────────────────────────────── */
+
+.interp {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg-base, #0a0a0f);
+}
+
+.interp__toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ─── The Chess Board ──────────────────────────────────────────────────── */
+
+.interp__board {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  padding: 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ─── Setup Screen ─────────────────────────────────────────────────────── */
+
+.interp__setup {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.interp__setup-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 48px 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  max-width: 420px;
+  width: 100%;
+}
+
+.interp__setup-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.interp__setup-title {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary, #f1f5f9);
+  margin: 0;
+  background: linear-gradient(135deg, #3b82f6, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.interp__setup-subtitle {
+  font-size: 14px;
+  color: var(--text-tertiary, #64748b);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.interp__setup-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.interp__setup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.interp__setup-field label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.interp__setup-field select {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary, #f1f5f9);
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+}
+
+.interp__setup-field select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.interp__setup-field select option {
+  background: #1e1e2e;
+  color: #f1f5f9;
+}
+
+.interp__setup-start {
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
+}
+
+.interp__setup-start:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+.interp__setup-start:active {
+  transform: translateY(0);
+}
+
+/* ─── Responsive: Mobile Stack ─────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .interp__board {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .interp__setup-card {
+    padding: 32px 24px;
+  }
+}
+
+/* ─── Large screens: extra breathing room ──────────────────────────────── */
+
+@media (min-width: 1200px) {
+  .interp__board {
+    padding: 16px 24px;
+    gap: 4px;
+  }
+}
