@@ -480,6 +480,28 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
+/* Light — Demo Mode button */
+
+[data-theme="light"] .demo-mode__btn {
+  border-color: rgba(109, 40, 217, 0.35);
+  background: rgba(109, 40, 217, 0.1);
+  color: #5b21b6;
+}
+
+[data-theme="light"] .demo-mode__btn:hover:not(:disabled) {
+  background: rgba(109, 40, 217, 0.18);
+}
+
+[data-theme="light"] .demo-mode__btn--stop {
+  border-color: rgba(185, 28, 28, 0.35);
+  background: rgba(185, 28, 28, 0.1);
+  color: #991b1b;
+}
+
+[data-theme="light"] .demo-mode__progress {
+  color: #5b21b6;
+}
+
 /* ─── Reset ────────────────────────────────────────────────────────────── */
 
 *, *::before, *::after {
