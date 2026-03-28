@@ -7,6 +7,21 @@ export const metadata = {
   title: 'Interp — Medical Interpretation',
   description: 'Human-verified AI medical interpretation in emergency departments.',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
+  openGraph: {
+    title: 'Interp — Medical Interpretation',
+    description: 'Human-verified AI medical interpretation in emergency departments.',
+    siteName: 'Interp',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Interp — Medical Interpretation',
+    description: 'Human-verified AI medical interpretation in emergency departments.',
+  },
 };
 
 export const viewport = {

@@ -17,7 +17,7 @@ export default function Header({
     <header className="interp-header">
       <div className="interp-header__left">
         <div className="interp-header__brand">
-          <span className="interp-header__logo">interp</span>
+          <img src="/interp-logo.svg" alt="interp" className="interp-header__logo-img" />
           <span className="interp-header__tagline">Beyond translation</span>
         </div>
       </div>

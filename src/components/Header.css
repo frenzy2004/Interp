@@ -20,14 +20,9 @@
   gap: 10px;
 }
 
-.interp-header__logo {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  background: linear-gradient(135deg, #3b82f6, #f97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.interp-header__logo-img {
+  height: 28px;
+  width: auto;
 }
 
 .interp-header__tagline {

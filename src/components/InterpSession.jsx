@@ -241,12 +241,7 @@ export default function InterpSession() {
         <div className="interp__setup">
           <div className="interp__setup-card">
             <div className="interp__setup-logo">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="18" stroke="#3b82f6" strokeWidth="2" fill="none" />
-                <circle cx="20" cy="20" r="8" stroke="#f97316" strokeWidth="2" fill="none" />
-                <path d="M20 2 L20 12 M20 28 L20 38 M2 20 L12 20 M28 20 L38 20" stroke="#3b82f6" strokeWidth="1.5" opacity="0.3" />
-              </svg>
-              <h1 className="interp__setup-title">interp</h1>
+              <img src="/interp-logo.svg" alt="interp" className="interp__setup-logo-img" />
               <p className="interp__setup-subtitle">Beyond translation, into interpretation</p>
             </div>
 

@@ -64,6 +64,11 @@
   gap: 8px;
 }
 
+.interp__setup-logo-img {
+  width: 200px;
+  height: auto;
+}
+
 .interp__setup-title {
   font-size: 36px;
   font-weight: 800;
