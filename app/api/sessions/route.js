@@ -18,11 +18,10 @@ export async function GET(request) {
   }
 }
 
-// POST /api/sessions — create a new session
+// POST /api/sessions — create a new session (works with or without auth)
 export async function POST(request) {
   try {
-    const { user, error } = await authenticate(request);
-    if (!user) return errorResponse(error || 'Unauthorized', 401);
+    const { user } = await authenticate(request);
 
     const body = await request.json();
     const { localId, physicianLang, patientLang, encounterType, department } = body;
@@ -31,7 +30,7 @@ export async function POST(request) {
       `INSERT INTO sessions (user_id, local_id, physician_lang, patient_lang, encounter_type, department)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [user.id, localId, physicianLang || 'en', patientLang || 'es', encounterType || 'outpatient', department || '']
+      [user?.id || null, localId, physicianLang || 'en', patientLang || 'es', encounterType || 'outpatient', department || '']
     );
 
     return jsonResponse({ session: result.rows?.[0] || result[0] }, 201);

@@ -1,11 +1,11 @@
 "use client";
-import { useState, useCallback, useEffect } from 'react';
-import { FileText, Users } from 'lucide-react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { FileText, Users, Pause, Play, Square, Plus, LogIn, RotateCcw, Sun, Moon } from 'lucide-react';
 import { useSession, LANGUAGES } from '../hooks/useSession';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
-import { speakText } from '../utils/ai';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
+import { useTheme } from '../hooks/useTheme';
 import { useComprehensionCheck } from '../hooks/useComprehensionCheck';
 import VoicePanel from './VoicePanel';
 import ComprehensionScore from './ComprehensionScore';
@@ -16,6 +16,8 @@ import DemoMode from './DemoMode';
 import InterpreterAlert from './InterpreterAlert';
 import AuditLog from './AuditLog';
 import InterpreterDashboard from './InterpreterDashboard';
+import { voiceSettings, VOICE_MODELS, VOICE_MODEL_LABELS, VOICE_MODEL_DESCRIPTIONS } from '../utils/voiceSettings';
+import { getToken } from '../utils/api';
 import './InterpSession.css';
 
 const CRITICAL_CHECK_TAGS = ['consent', 'surgical-risk', 'procedure'];
@@ -29,10 +31,28 @@ export default function InterpSession() {
   const [showEscalation, setShowEscalation] = useState(false);
   const [showAuditLog, setShowAuditLog] = useState(false);
   const [showInterpreterDash, setShowInterpreterDash] = useState(false);
+  const [voiceModel, setVoiceModel] = useState(VOICE_MODELS.STANDARD);
+  // Layout modes: 'normal' → 'clock' → 'board' → 'normal'
+  const [layoutMode, setLayoutMode] = useState('normal');
+  const cycleLayout = useCallback(() => {
+    setLayoutMode(m => m === 'normal' ? 'clock' : m === 'clock' ? 'board' : 'normal');
+  }, []);
+
+  // Sync voice model from localStorage after hydration
+  useEffect(() => {
+    setVoiceModel(voiceSettings.getModel());
+  }, []);
+
+  const handleVoiceModelChange = useCallback((e) => {
+    const model = e.target.value;
+    setVoiceModel(model);
+    voiceSettings.setModel(model);
+  }, []);
 
   const isOnline = useOnlineStatus();
+  const { theme, toggleTheme } = useTheme();
   const { isAuthenticated } = useAuth();
-  const { translate, isTranslating } = useTranslation();
+  const { translate } = useTranslation();
 
   const {
     session,
@@ -61,14 +81,36 @@ export default function InterpSession() {
     patientLang: session?.patientLang || patientLang,
   });
 
+  // Database session ID for persistence (null if unauthenticated)
+  const dbSessionIdRef = useRef(null);
+
   // Handle starting a new session
-  const handleStartSession = useCallback(() => {
-    startSession(physicianLang, patientLang, encounterType);
+  const handleStartSession = useCallback(async () => {
+    const localSession = startSession(physicianLang, patientLang, encounterType);
     setShowSetup(false);
+
+    // Create session in DB (background, non-blocking — works anonymous or authenticated)
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      const token = getToken();
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const res = await fetch('/api/sessions', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ localId: localSession.id, physicianLang, patientLang, encounterType }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        dbSessionIdRef.current = data.session?.id ?? null;
+      }
+    } catch (err) {
+      console.warn('Session DB creation failed:', err.message);
+    }
   }, [physicianLang, patientLang, encounterType, startSession]);
 
   // Handle new utterance from either panel
-  const handleUtterance = useCallback(async (role, text, asrModel, voiceTags = []) => {
+  const handleUtterance = useCallback(async ({ role, text, asrModel, voiceTags = [], rawAsrText = '' }) => {
     if (!text?.trim() || !session) return;
 
     // If patient is responding to a comprehension check — route to check handler
@@ -89,6 +131,7 @@ export default function InterpSession() {
     const entry = addUtterance({
       role,
       originalText: text,
+      rawAsrText: rawAsrText || text,
       sourceLang,
       targetLang,
       asrModel,
@@ -109,16 +152,27 @@ export default function InterpSession() {
           medicalTags: mergedTags,
         });
 
-        // Speak the translation aloud in the target language
-        speakText(result.translatedText).then((audioBase64) => {
-          if (!audioBase64) return;
-          const audio = new Audio(`data:audio/mpeg;base64,${audioBase64}`);
-          audio.play().catch(() => {});
-        }).catch((err) => console.error('TTS error:', err));
-
         // Trigger comprehension check for critical physician utterances
         if (role === 'physician' && mergedTags.some(t => CRITICAL_CHECK_TAGS.includes(t))) {
           initiateCheck({ ...entry, translatedText: result.translatedText, medicalTags: mergedTags });
+        }
+
+        // Persist utterance + translation memory to DB (background, non-blocking)
+        if (dbSessionIdRef.current) {
+          const headers = { 'Content-Type': 'application/json' };
+          const token = getToken();
+          if (token) headers.Authorization = `Bearer ${token}`;
+
+          fetch(`/api/sessions/${dbSessionIdRef.current}/utterances`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              role, originalText: text, translatedText: result.translatedText,
+              backTranslation: result.backTranslation, sourceLang, targetLang,
+              accuracyScore: result.accuracyScore, comprehensionScore: result.comprehensionScore,
+              medicalTags: mergedTags, issues: result.issues, asrModel,
+            }),
+          }).catch(err => console.warn('Utterance persist failed:', err.message));
         }
       }
     } catch (err) {
@@ -132,7 +186,7 @@ export default function InterpSession() {
 
   // Demo mode inject handler — bypasses mic/ASR entirely
   const handleDemoInject = useCallback((role, text) => {
-    handleUtterance(role, text, 'demo');
+    handleUtterance({ role, text, asrModel: 'demo' });
   }, [handleUtterance]);
 
   // Interpreter correction handler
@@ -179,6 +233,8 @@ export default function InterpSession() {
         <Header
           onOpenAuth={() => setShowAuthModal(true)}
           isAuthenticated={isAuthenticated}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
         {!isOnline && <OfflineBanner />}
 
@@ -222,6 +278,18 @@ export default function InterpSession() {
                   <option value="inpatient">Inpatient</option>
                 </select>
               </div>
+
+              <div className="interp__setup-field">
+                <label>Voice Model</label>
+                <select value={voiceModel} onChange={handleVoiceModelChange}>
+                  {Object.entries(VOICE_MODEL_LABELS).map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+                <span className="interp__setup-hint">
+                  {VOICE_MODEL_DESCRIPTIONS[voiceModel]}
+                </span>
+              </div>
             </div>
 
             <button
@@ -241,16 +309,7 @@ export default function InterpSession() {
   // ─── Active Session — The Chess Board ─────────────────────────────────
 
   return (
-    <div className="interp">
-      <Header
-        onOpenAuth={() => setShowAuthModal(true)}
-        isAuthenticated={isAuthenticated}
-        sessionActive={status === 'active' || status === 'paused'}
-        onEndSession={handleEndSession}
-        onPauseSession={status === 'active' ? pauseSession : resumeSession}
-        isPaused={status === 'paused'}
-        onNewSession={status === 'completed' || status === 'escalated' ? handleNewSession : undefined}
-      />
+    <div className={`interp ${layoutMode !== 'normal' ? `interp--${layoutMode}` : ''}`}>
       {!isOnline && <OfflineBanner />}
 
       <div className="interp__toolbar">
@@ -266,6 +325,45 @@ export default function InterpSession() {
           <FileText size={16} />
           <span>Audit Log</span>
         </button>
+
+        <div className="interp__toolbar-spacer" />
+
+        <button className="interp-header__btn" onClick={toggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
+
+        {!isAuthenticated && (
+          <button className="interp-header__btn" onClick={() => setShowAuthModal(true)}>
+            <LogIn size={16} />
+            <span>Sign In</span>
+          </button>
+        )}
+
+        <button
+          className={`interp-header__btn ${layoutMode !== 'normal' ? 'interp-header__btn--active' : ''}`}
+          onClick={cycleLayout}
+          title={layoutMode === 'normal' ? 'Clock mode' : layoutMode === 'clock' ? 'Board mode' : 'Normal mode'}
+        >
+          <RotateCcw size={16} />
+        </button>
+
+        {(status === 'active' || status === 'paused') && (
+          <>
+            <button className="interp-header__btn" onClick={status === 'active' ? pauseSession : resumeSession} title={status === 'paused' ? 'Resume' : 'Pause'}>
+              {status === 'paused' ? <Play size={16} /> : <Pause size={16} />}
+            </button>
+            <button className="interp-header__btn interp-header__btn--danger" onClick={handleEndSession} title="End session">
+              <Square size={16} />
+              <span>End</span>
+            </button>
+          </>
+        )}
+        {(status === 'completed' || status === 'escalated') && (
+          <button className="interp-header__btn interp-header__btn--primary" onClick={handleNewSession}>
+            <Plus size={16} />
+            <span>New Session</span>
+          </button>
+        )}
       </div>
 
       <div className="interp__board">
@@ -275,8 +373,8 @@ export default function InterpSession() {
           language={session?.physicianLang || 'en'}
           languageLabel={LANGUAGES[session?.physicianLang] || 'English'}
           utterances={utterances}
-          onUtterance={(text, model, voiceTags) => handleUtterance('physician', text, model, voiceTags)}
-          disabled={status !== 'active' || isTranslating}
+          onUtterance={({ text, asrModel, voiceTags, rawAsrText }) => handleUtterance({ role: 'physician', text, asrModel, voiceTags, rawAsrText })}
+          disabled={status !== 'active'}
           isAuthenticated={isAuthenticated}
         />
 
@@ -297,8 +395,8 @@ export default function InterpSession() {
           language={session?.patientLang || 'es'}
           languageLabel={LANGUAGES[session?.patientLang] || 'Spanish'}
           utterances={utterances}
-          onUtterance={(text, model, voiceTags) => handleUtterance('patient', text, model, voiceTags)}
-          disabled={status !== 'active' || isTranslating}
+          onUtterance={({ text, asrModel, voiceTags, rawAsrText }) => handleUtterance({ role: 'patient', text, asrModel, voiceTags, rawAsrText })}
+          disabled={status !== 'active'}
           isAuthenticated={isAuthenticated}
           pendingCheck={pendingCheck}
           onDismissCheck={dismissCheck}

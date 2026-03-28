@@ -7,7 +7,7 @@ import path from 'path';
 import os from 'os';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const MODEL = "gemini-3-flash-preview";
+const MODEL = "gemini-2.5-flash";
 
 // ─── TRANSLATION (legacy single-call, kept as fallback) ─────────────────
 
@@ -140,43 +140,12 @@ BACK-TRANSLATION: ${backTranslation}`,
   };
 }
 
-// ─── TTS (ElevenLabs) ────────────────────────────────────────────────────────
-
-const ELEVENLABS_VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // Rachel — multilingual v2
-
-export async function speakText(text) {
-  if (!text?.trim()) return null;
-
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
-    {
-      method: 'POST',
-      headers: {
-        'xi-api-key': process.env.ELEVENLABS_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`ElevenLabs TTS error: ${err}`);
-  }
-
-  const audioBuffer = await response.arrayBuffer();
-  return Buffer.from(audioBuffer).toString('base64');
-}
-
 // ─── ASR ────────────────────────────────────────────────────────────────────
 
 export async function transcribeAudio(formData) {
   const file = formData.get('file');
   const language = formData.get('language') || 'en';
+  const asrModel = formData.get('model') || MODEL;
 
   if (!file) throw new Error("No audio file provided.");
 
@@ -187,7 +156,7 @@ export async function transcribeAudio(formData) {
   const mimeType = rawMime.includes('ogg') ? 'audio/webm' : rawMime;
 
   const response = await ai.models.generateContent({
-    model: MODEL,
+    model: asrModel,
     contents: [
       {
         role: 'user',
@@ -202,7 +171,7 @@ export async function transcribeAudio(formData) {
   const text = response.text?.trim();
   if (!text) throw new Error("Gemini returned empty transcription.");
 
-  return { text, model: 'gemini-asr' };
+  return { text, model: asrModel };
 }
 
 // ─── VOICE TRANSCRIPT CLEANUP ───────────────────────────────────────────────

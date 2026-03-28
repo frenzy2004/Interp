@@ -33,7 +33,12 @@ export default function VoicePanel({
 
   const handleTranscript = (result) => {
     if (result?.cleaned) {
-      onUtterance?.(result.cleaned, result.model, result.voiceTags ?? []);
+      onUtterance?.({
+        text: result.cleaned,
+        asrModel: result.model,
+        voiceTags: result.voiceTags ?? [],
+        rawAsrText: result.text,
+      });
     }
   };
 
@@ -104,6 +109,14 @@ export default function VoicePanel({
               <p className="voice-panel__bubble-text">
                 {displayText || utt.originalText}
               </p>
+
+              {/* Show raw ASR transcript for own utterances (collapsible) */}
+              {isOwnUtterance && utt.rawAsrText && utt.rawAsrText !== utt.originalText && (
+                <details className="voice-panel__raw-transcript">
+                  <summary className="voice-panel__raw-toggle">Show original voice transcript</summary>
+                  <p className="voice-panel__raw-text">{utt.rawAsrText}</p>
+                </details>
+              )}
 
               {/* Show "translating..." note when other role's text hasn't been translated yet */}
               {showOriginalFallback && (
@@ -186,7 +199,7 @@ export default function VoicePanel({
         <button
           className={`voice-panel__mic ${isRecording ? 'voice-panel__mic--recording' : ''} ${isProcessing ? 'voice-panel__mic--processing' : ''} ${pendingCheck ? 'voice-panel__mic--check' : ''}`}
           onClick={toggleRecording}
-          disabled={disabled || isProcessing || isCheckGenerating}
+          disabled={disabled || isProcessing}
           aria-label={isRecording ? 'Stop recording' : 'Start recording'}
         >
           {isProcessing ? (

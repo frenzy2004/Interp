@@ -1,5 +1,5 @@
 "use client";
-import { Pause, Play, Square, Plus, User, LogIn } from 'lucide-react';
+import { Pause, Play, Square, Plus, User, LogIn, Sun, Moon } from 'lucide-react';
 import './Header.css';
 
 export default function Header({
@@ -10,6 +10,8 @@ export default function Header({
   onPauseSession,
   isPaused = false,
   onNewSession,
+  theme,
+  onToggleTheme,
 }) {
   return (
     <header className="interp-header">
@@ -21,6 +23,12 @@ export default function Header({
       </div>
 
       <div className="interp-header__right">
+        {onToggleTheme && (
+          <button className="interp-header__btn" onClick={onToggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+        )}
+
         {sessionActive && (
           <>
             <button className="interp-header__btn" onClick={onPauseSession} title={isPaused ? 'Resume' : 'Pause'}>

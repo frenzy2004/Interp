@@ -55,6 +55,431 @@
   --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* ─── Light Theme ─────────────────────────────────────────────────────── */
+
+[data-theme="light"] {
+  --bg-base: #dde3ed;
+  --bg-surface: #f1f5f9;
+  --bg-elevated: #c4cdd9;
+
+  --border-subtle: rgba(0, 0, 0, 0.15);
+  --border-default: rgba(0, 0, 0, 0.22);
+  --border-strong: rgba(0, 0, 0, 0.35);
+
+  --text-primary: #020617;
+  --text-secondary: #0f172a;
+  --text-tertiary: #334155;
+
+  --panel-bg: #e8ecf2;
+  --panel-border: rgba(0, 0, 0, 0.18);
+
+  --color-success: #15803d;
+  --color-warning: #a16207;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
+
+  color-scheme: light;
+}
+
+[data-theme="light"] body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(59, 130, 246, 0.2);
+  color: #0f172a;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* Light overrides for hardcoded component colors */
+
+[data-theme="light"] .interp {
+  background: var(--bg-base);
+}
+
+[data-theme="light"] .voice-panel {
+  background: var(--bg-surface);
+  border-color: var(--panel-border);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .voice-panel__header {
+  border-bottom-color: var(--panel-border);
+}
+
+[data-theme="light"] .voice-panel__controls {
+  border-top-color: var(--panel-border);
+}
+
+[data-theme="light"] .voice-panel--physician {
+  --bubble-own-bg: rgba(59, 130, 246, 0.12);
+  --bubble-own-border: rgba(59, 130, 246, 0.25);
+  --role-color-dim: rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="light"] .voice-panel--patient {
+  --bubble-own-bg: rgba(249, 115, 22, 0.12);
+  --bubble-own-border: rgba(249, 115, 22, 0.25);
+  --role-color-dim: rgba(249, 115, 22, 0.15);
+}
+
+[data-theme="light"] .voice-panel__bubble {
+  background: #e2e8f0;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .voice-panel__bubble-text {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .voice-panel__bubble-back {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .voice-panel__raw-text {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .voice-panel__mic {
+  border-color: var(--role-color);
+  color: var(--role-color);
+}
+
+[data-theme="light"] .voice-panel__mic--recording {
+  color: white;
+}
+
+[data-theme="light"] .interp__toolbar {
+  border-bottom-color: rgba(0, 0, 0, 0.15);
+  background: var(--bg-surface);
+}
+
+/* Light — Medical tags (darker, bolder colors) */
+
+[data-theme="light"] .voice-panel__tag {
+  background: rgba(79, 70, 229, 0.18);
+  color: #3730a3;
+  font-weight: 700;
+}
+[data-theme="light"] .voice-panel__tag--consent     { background: rgba(37, 99, 235, 0.18); color: #1e3a8a; }
+[data-theme="light"] .voice-panel__tag--allergy      { background: rgba(220, 38, 38, 0.18); color: #991b1b; }
+[data-theme="light"] .voice-panel__tag--medication   { background: rgba(217, 119, 6, 0.2);  color: #92400e; }
+[data-theme="light"] .voice-panel__tag--surgical-risk { background: rgba(220, 38, 38, 0.18); color: #991b1b; }
+[data-theme="light"] .voice-panel__tag--diagnosis    { background: rgba(109, 40, 217, 0.18); color: #5b21b6; }
+[data-theme="light"] .voice-panel__tag--symptom      { background: rgba(8, 145, 178, 0.18); color: #155e75; }
+[data-theme="light"] .voice-panel__tag--procedure    { background: rgba(79, 70, 229, 0.18); color: #3730a3; }
+[data-theme="light"] .voice-panel__tag--dosage       { background: rgba(217, 119, 6, 0.2);  color: #92400e; }
+[data-theme="light"] .voice-panel__tag--history      { background: rgba(71, 85, 105, 0.18); color: #1e293b; }
+
+/* Light — Scores */
+
+[data-theme="light"] .voice-panel__score--good { color: #15803d; }
+[data-theme="light"] .voice-panel__score--warn { color: #a16207; }
+[data-theme="light"] .voice-panel__score--poor { color: #b91c1c; }
+
+/* Light — Translated badge */
+
+[data-theme="light"] .voice-panel__bubble-translated-badge {
+  background: rgba(109, 40, 217, 0.18);
+  color: #5b21b6;
+}
+
+/* Light — Pending translation */
+
+[data-theme="light"] .voice-panel__bubble-pending {
+  color: #92400e;
+}
+
+/* Light — Flag icon */
+
+[data-theme="light"] .voice-panel__flag-icon {
+  color: #b91c1c;
+}
+
+/* Light — Back translation */
+
+[data-theme="light"] .voice-panel__bubble-back {
+  background: #dde3ed;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-secondary);
+}
+
+/* Light — Comprehension check badges */
+
+[data-theme="light"] .voice-panel__comprehension-badge--pass    { background: rgba(22, 163, 74, 0.15); color: #15803d; }
+[data-theme="light"] .voice-panel__comprehension-badge--fail    { background: rgba(220, 38, 38, 0.15); color: #b91c1c; }
+[data-theme="light"] .voice-panel__comprehension-badge--skipped { background: rgba(71, 85, 105, 0.15); color: #334155; }
+
+/* Light — Check bubble */
+
+[data-theme="light"] .voice-panel__check-bubble {
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.3);
+}
+[data-theme="light"] .voice-panel__check-header { color: #92400e; }
+[data-theme="light"] .voice-panel__check-dismiss {
+  color: #92400e;
+  border-color: rgba(217, 119, 6, 0.4);
+}
+
+/* Light — Simplified rephrasing */
+
+[data-theme="light"] .voice-panel__simplified {
+  background: rgba(217, 119, 6, 0.1);
+  border-left-color: #d97706;
+}
+[data-theme="light"] .voice-panel__simplified-label { color: #92400e; }
+[data-theme="light"] .voice-panel__simplified p { color: var(--text-primary); }
+
+[data-theme="light"] .interp__setup-card {
+  background: var(--bg-surface);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .interp__setup-field select {
+  background: var(--bg-elevated);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+[data-theme="light"] .interp__setup-field select option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+[data-theme="light"] .interp-header {
+  background: var(--bg-surface);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .interp-header__btn {
+  color: var(--text-secondary);
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="light"] .interp-header__btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--text-primary);
+}
+
+/* Light — Comprehension Score center panel */
+
+[data-theme="light"] .comp-score {
+  background: var(--bg-surface);
+  border-color: var(--panel-border);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .comp-score__meter {
+  background: #e8ecf2;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .comp-score__meter--good { color: #15803d; border-color: rgba(22, 163, 74, 0.3); }
+[data-theme="light"] .comp-score__meter--warn { color: #a16207; border-color: rgba(161, 98, 7, 0.3); }
+[data-theme="light"] .comp-score__meter--poor { color: #b91c1c; border-color: rgba(185, 28, 28, 0.3); }
+[data-theme="light"] .comp-score__meter--none { color: #475569; }
+
+[data-theme="light"] .comp-score__status--active .comp-score__status-label { color: #15803d; }
+[data-theme="light"] .comp-score__status--escalated .comp-score__status-label { color: #b91c1c; }
+
+[data-theme="light"] .comp-score__critical-tag {
+  background: rgba(185, 28, 28, 0.15);
+  color: #991b1b;
+}
+
+[data-theme="light"] .comp-score__escalate {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+  color: #b91c1c;
+}
+
+[data-theme="light"] .auth-modal__overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .auth-modal__card {
+  background: var(--bg-surface);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .audit-log__overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .audit-log__panel {
+  background: var(--bg-surface);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Light — Audit Log panel */
+
+[data-theme="light"] .audit-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .audit-panel {
+  background: var(--bg-surface);
+  border-left-color: rgba(0, 0, 0, 0.12);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .audit-header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .audit-summary {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .audit-tags {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .audit-entry {
+  background: #e8ecf2;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .audit-tag {
+  background: rgba(79, 70, 229, 0.15);
+  color: #3730a3;
+}
+[data-theme="light"] .audit-tag--consent     { background: rgba(37, 99, 235, 0.15); color: #1e3a8a; }
+[data-theme="light"] .audit-tag--allergy      { background: rgba(220, 38, 38, 0.15); color: #991b1b; }
+[data-theme="light"] .audit-tag--medication   { background: rgba(217, 119, 6, 0.18); color: #92400e; }
+[data-theme="light"] .audit-tag--surgical-risk { background: rgba(220, 38, 38, 0.15); color: #991b1b; }
+
+[data-theme="light"] .audit-entry__score.good { color: #15803d; }
+[data-theme="light"] .audit-entry__score.warn { color: #a16207; }
+[data-theme="light"] .audit-entry__score.poor { color: #b91c1c; }
+[data-theme="light"] .audit-entry__flag { color: #b91c1c; }
+[data-theme="light"] .audit-entry__role--physician { color: #1d4ed8; }
+[data-theme="light"] .audit-entry__role--patient { color: #c2410c; }
+
+[data-theme="light"] .audit-entry__corrected {
+  background: rgba(217, 119, 6, 0.18);
+  color: #92400e;
+}
+
+[data-theme="light"] .audit-entry__check--pass    { color: #15803d; background: rgba(22, 163, 74, 0.12); }
+[data-theme="light"] .audit-entry__check--fail    { color: #b91c1c; background: rgba(220, 38, 38, 0.12); }
+[data-theme="light"] .audit-entry__check--skipped { color: #475569; background: rgba(71, 85, 105, 0.12); }
+
+/* Light — Interpreter Dashboard panel */
+
+[data-theme="light"] .interp-dash__overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .interp-dash__panel {
+  background: var(--bg-surface);
+  border-left-color: rgba(0, 0, 0, 0.12);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .interp-dash__header {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .interp-dash__title {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .interp-dash__close {
+  color: var(--text-tertiary);
+}
+[data-theme="light"] .interp-dash__close:hover {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .interp-dash__meta {
+  color: var(--text-tertiary);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .interp-dash__card {
+  background: #e8ecf2;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .interp-dash__corrected-badge {
+  background: rgba(217, 119, 6, 0.18);
+  color: #92400e;
+}
+
+[data-theme="light"] .interp-dash__check-badge--pass    { background: rgba(22, 163, 74, 0.15); color: #15803d; }
+[data-theme="light"] .interp-dash__check-badge--fail    { background: rgba(220, 38, 38, 0.15); color: #b91c1c; }
+[data-theme="light"] .interp-dash__check-badge--pending { background: rgba(217, 119, 6, 0.15); color: #92400e; }
+[data-theme="light"] .interp-dash__check-badge--skipped { background: rgba(71, 85, 105, 0.15); color: #475569; }
+
+[data-theme="light"] .interp-dash__role {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .interp-dash__time {
+  color: var(--text-tertiary);
+}
+
+[data-theme="light"] .interp-dash__field-label {
+  color: var(--text-tertiary);
+}
+
+[data-theme="light"] .interp-dash__field-text {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .interp-dash__field-text--translation {
+  color: #4f46e5;
+}
+
+[data-theme="light"] .interp-dash__pending {
+  color: var(--text-tertiary);
+}
+
+[data-theme="light"] .interp-dash__empty {
+  color: var(--text-tertiary);
+}
+
+[data-theme="light"] .interp-dash__edit-btn {
+  color: var(--text-secondary);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+[data-theme="light"] .interp-dash__edit-btn:hover {
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+[data-theme="light"] .interp-dash__textarea {
+  background: var(--bg-elevated);
+  border-color: rgba(79, 70, 229, 0.3);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .interp-dash__cancel-btn {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .interp-dash__transcript::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 /* ─── Reset ────────────────────────────────────────────────────────────── */
 
 *, *::before, *::after {

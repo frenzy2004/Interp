@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+.env
 .env*.local
 
 .next
+
+# Local tool config
+.claude/
+.cursor/

@@ -1,8 +1,7 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { transcribeAudio, processVoiceTranscript } from '../utils/ai';
 import { voiceSettings, VOICE_MODELS } from '../utils/voiceSettings';
-import { applyVoiceTagging, MEDICAL_TAG_IDS } from '../utils/voiceTagging';
+import { applyVoiceTagging } from '../utils/voiceTagging';
 
 /**
  * useVoiceRecorder — handles mic recording, ASR transcription, and cleanup.
@@ -22,6 +21,13 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
   const shouldRecordRef = useRef(false);
   const streamRef = useRef(null);
 
+  // Keep latest values in refs so closures never go stale
+  const onTranscriptRef = useRef(onTranscript);
+  const languageRef = useRef(language);
+  const isProcessingRef = useRef(false);
+  onTranscriptRef.current = onTranscript;
+  languageRef.current = language;
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -32,7 +38,7 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
   }, []);
 
   const startRecording = useCallback(async () => {
-    if (isProcessing) return;
+    if (isProcessingRef.current) return;
     if (mediaRecorderRef.current?.state === 'recording') return;
 
     // Browser WebSpeech fallback
@@ -96,7 +102,7 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
       setIsRecording(false);
       setError(err.name === 'NotAllowedError' ? 'Microphone permission denied' : 'Could not access microphone');
     }
-  }, [isProcessing]);
+  }, []);
 
   const stopRecording = useCallback(() => {
     shouldRecordRef.current = false;
@@ -121,7 +127,7 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = language;
+      recognition.lang = languageRef.current;
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
@@ -130,7 +136,7 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
         if (transcript) {
           const result = { text: transcript, model: 'WebSpeech', cleaned: transcript };
           setLastTranscript(result);
-          onTranscript?.(result);
+          onTranscriptRef.current?.(result);
         }
       };
 
@@ -144,37 +150,48 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
       setError('WebSpeech failed');
       setIsRecording(false);
     }
-  }, [language, onTranscript]);
+  }, []);
 
   // Process recorded audio through ASR + cleanup pipeline
+  // Uses refs for language/onTranscript so this never goes stale inside onstop closures
   const processAudio = useCallback(async (audioBlob) => {
     setIsProcessing(true);
+    isProcessingRef.current = true;
     setError(null);
 
+    // Safety timeout — if ASR hangs, unlock the mic after 30s
+    const timeout = setTimeout(() => {
+      setIsProcessing(false);
+      isProcessingRef.current = false;
+      setError('Transcription timed out');
+    }, 30000);
+
     try {
-      // 1. Transcribe via ILMU ASR
+      // 1. Transcribe via /api/transcribe (separate from server action queue)
       const formData = new FormData();
       const ext = audioFormatRef.current || 'ogg';
       formData.append('file', audioBlob, `voice-input.${ext}`);
-      formData.append('language', language);
+      formData.append('language', languageRef.current);
 
       const preferredModel = voiceSettings.getModel();
       if (preferredModel && preferredModel !== VOICE_MODELS.BROWSER) {
         formData.append('model', preferredModel);
       }
 
-      const asrResult = await transcribeAudio(formData);
+      const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Transcription failed (${res.status})`);
+      }
+      const asrResult = await res.json();
 
       if (!asrResult?.text?.trim()) {
-        setIsProcessing(false);
         return;
       }
 
-      // 2. Clean up ASR output (preserve verbal tag commands)
-      const cleanedText = await processVoiceTranscript(asrResult.text, MEDICAL_TAG_IDS);
-
-      // 3. Strip verbal tag commands, collect detected tag IDs
-      const { text: taggedText, tags: voiceTags } = applyVoiceTagging(cleanedText || asrResult.text);
+      // 2. Client-side tagging — strip verbal tag commands, collect detected tag IDs
+      // (pure string matching, no API call — mic unlocks immediately)
+      const { text: taggedText, tags: voiceTags } = applyVoiceTagging(asrResult.text);
 
       const result = {
         text: asrResult.text,
@@ -184,14 +201,16 @@ export function useVoiceRecorder({ language = 'en', onTranscript, isAuthenticate
       };
 
       setLastTranscript(result);
-      onTranscript?.(result);
+      onTranscriptRef.current?.(result);
     } catch (err) {
       console.error("Voice processing error:", err);
       setError('Transcription failed');
     } finally {
+      clearTimeout(timeout);
       setIsProcessing(false);
+      isProcessingRef.current = false;
     }
-  }, [language, onTranscript]);
+  }, []);
 
   return {
     isRecording,

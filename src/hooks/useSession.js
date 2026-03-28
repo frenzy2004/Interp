@@ -77,6 +77,7 @@ export function useSession() {
       id: generateId(),
       role: utterance.role, // 'physician' or 'patient'
       originalText: utterance.originalText,
+      rawAsrText: utterance.rawAsrText || '',
       translatedText: utterance.translatedText || '',
       backTranslation: utterance.backTranslation || '',
       sourceLang: utterance.sourceLang,

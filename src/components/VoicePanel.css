@@ -66,6 +66,7 @@
   letter-spacing: 0.02em;
 }
 
+
 /* ─── Transcript ───────────────────────────────────────────────────────── */
 
 .voice-panel__transcript {
@@ -448,6 +449,51 @@
 @keyframes recordBlink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
+}
+
+/* ─── Raw ASR Transcript ──────────────────────────────────────────────── */
+
+.voice-panel__raw-transcript {
+  margin-top: 4px;
+}
+
+.voice-panel__raw-toggle {
+  font-size: 11px;
+  color: var(--text-tertiary, #64748b);
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+  list-style: none;
+}
+
+.voice-panel__raw-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.voice-panel__raw-toggle::before {
+  content: '▸ ';
+}
+
+.voice-panel__raw-transcript[open] .voice-panel__raw-toggle::before {
+  content: '▾ ';
+}
+
+.voice-panel__raw-toggle:hover {
+  opacity: 1;
+  color: var(--role-color);
+}
+
+.voice-panel__raw-text {
+  font-size: 12px;
+  color: var(--text-secondary, #94a3b8);
+  margin: 4px 0 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  font-style: italic;
+  line-height: 1.4;
 }
 
 /* ─── Responsive ───────────────────────────────────────────────────────── */
