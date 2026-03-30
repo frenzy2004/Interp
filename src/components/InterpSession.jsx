@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { FileText, Users, Pause, Play, Square, Plus, LogIn, RotateCcw, Sun, Moon } from 'lucide-react';
+import { FileText, Users, Pause, Play, Square, Plus, LogIn, RotateCcw, Sun, Moon, Volume2, VolumeX } from 'lucide-react';
 import { useSession, LANGUAGES } from '../hooks/useSession';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
@@ -17,6 +17,7 @@ import InterpreterAlert from './InterpreterAlert';
 import AuditLog from './AuditLog';
 import InterpreterDashboard from './InterpreterDashboard';
 import { voiceSettings, VOICE_MODELS, VOICE_MODEL_LABELS, VOICE_MODEL_DESCRIPTIONS } from '../utils/voiceSettings';
+import { useTTS } from '../hooks/useTTS';
 import { getToken } from '../utils/api';
 import './InterpSession.css';
 
@@ -51,6 +52,7 @@ export default function InterpSession() {
 
   const isOnline = useOnlineStatus();
   const { theme, toggleTheme } = useTheme();
+  const { ttsEnabled, toggleTTS, speak } = useTTS();
   const { isAuthenticated } = useAuth();
   const { translate } = useTranslation();
 
@@ -152,6 +154,8 @@ export default function InterpSession() {
           medicalTags: mergedTags,
         });
 
+        speak(result.translatedText, targetLang);
+
         // Trigger comprehension check for critical physician utterances
         if (role === 'physician' && mergedTags.some(t => CRITICAL_CHECK_TAGS.includes(t))) {
           initiateCheck({ ...entry, translatedText: result.translatedText, medicalTags: mergedTags });
@@ -182,7 +186,7 @@ export default function InterpSession() {
         flagReason: 'Translation failed',
       });
     }
-  }, [session, addUtterance, updateUtterance, translate, pendingCheckId, handleCheckResponse, dismissCheck, initiateCheck]);
+  }, [session, addUtterance, updateUtterance, translate, pendingCheckId, handleCheckResponse, dismissCheck, initiateCheck, speak]);
 
   // Demo mode inject handler — bypasses mic/ASR entirely
   const handleDemoInject = useCallback((role, text) => {
@@ -312,18 +316,26 @@ export default function InterpSession() {
           onInjectUtterance={handleDemoInject}
           disabled={status !== 'active'}
         />
-        <button className="interp-header__btn" onClick={() => setShowInterpreterDash(true)}>
+        <button className={`interp-header__btn ${showInterpreterDash ? 'interp-header__btn--glow-blue' : ''}`} onClick={() => setShowInterpreterDash(true)}>
           <Users size={16} />
           <span>Interpreter</span>
         </button>
-        <button className="interp-header__btn" onClick={() => setShowAuditLog(true)}>
+        <button className={`interp-header__btn ${showAuditLog ? 'interp-header__btn--glow-indigo' : ''}`} onClick={() => setShowAuditLog(true)}>
           <FileText size={16} />
           <span>Audit Log</span>
         </button>
 
         <div className="interp__toolbar-spacer" />
 
-        <button className="interp-header__btn" onClick={toggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+        <button
+          className={`interp-header__btn ${ttsEnabled ? 'interp-header__btn--glow-blue' : ''}`}
+          onClick={toggleTTS}
+          title={ttsEnabled ? 'Voice output on — click to mute' : 'Voice output off — click to enable'}
+        >
+          {ttsEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+        </button>
+
+        <button className={`interp-header__btn ${theme === 'light' ? 'interp-header__btn--glow-amber' : ''}`} onClick={toggleTheme} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
           {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
 

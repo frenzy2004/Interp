@@ -81,6 +81,52 @@
   background: rgba(59, 130, 246, 0.1);
 }
 
+/* ─── Glow States — vibrant active buttons ────────────────────────────── */
+
+.interp-header__btn--glow-blue {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #3b82f6;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.4);
+}
+.interp-header__btn--glow-blue:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+}
+
+.interp-header__btn--glow-indigo {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-color: #6366f1;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+}
+.interp-header__btn--glow-indigo:hover {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #fff;
+}
+
+.interp-header__btn--glow-amber {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #f59e0b;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
+}
+.interp-header__btn--glow-amber:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff;
+}
+
+.interp-header__btn--active {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border-color: #8b5cf6;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(139, 92, 246, 0.4);
+}
+.interp-header__btn--active:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #fff;
+}
+
 .interp-header__avatar {
   width: 32px;
   height: 32px;
