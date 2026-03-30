@@ -210,6 +210,25 @@
   }
 }
 
+/* ─── Mobile: icon-only toolbar ────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .interp__toolbar {
+    gap: 4px;
+    padding: 4px 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .interp__toolbar .interp-header__btn {
+    padding: 6px 8px;
+  }
+
+  .interp__toolbar .interp-header__btn span {
+    display: none;
+  }
+}
+
 /* ─── Large screens: extra breathing room ──────────────────────────────── */
 
 @media (min-width: 1200px) {
